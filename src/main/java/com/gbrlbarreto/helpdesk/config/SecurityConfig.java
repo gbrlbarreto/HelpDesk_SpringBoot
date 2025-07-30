@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,7 +30,7 @@ import com.gbrlbarreto.helpdesk.security.JWTUtil;
 @Configuration
 public class SecurityConfig{
 
-    private static final String[] PUBLIC_MATCHERS = {"/h2-console/**"};
+    private static final String[] PUBLIC_MATCHERS = {"/h2-console/**", "/login"};
 
     @Autowired
     private Environment env;
@@ -46,8 +47,8 @@ public class SecurityConfig{
 
         http.cors(withDefaults());
         http.csrf(csrf -> csrf.disable());
-        http.addFilter(new JWTAuthenticationFilter(authManager, jwtUtil));
-        http.addFilter(new JWTAuthorizationFilter(authManager, jwtUtil, userDetailsService));
+        http.addFilterAt(new JWTAuthenticationFilter(authManager, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTAuthorizationFilter(authManager, jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(authz -> authz.requestMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
