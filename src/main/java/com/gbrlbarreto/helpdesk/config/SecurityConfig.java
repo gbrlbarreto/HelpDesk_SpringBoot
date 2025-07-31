@@ -49,7 +49,7 @@ public class SecurityConfig{
         http.csrf(csrf -> csrf.disable());
         http.addFilterAt(new JWTAuthenticationFilter(authManager, jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JWTAuthorizationFilter(authManager, jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-        //http.authorizeHttpRequests(authz -> authz.requestMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated());
+        http.authorizeHttpRequests(authz -> authz.requestMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
