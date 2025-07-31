@@ -19,7 +19,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 
 @Entity
 public abstract class Pessoa implements Serializable{
@@ -39,7 +38,7 @@ public abstract class Pessoa implements Serializable{
     protected String senha;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "PERFIS", joinColumns = @JoinColumn(name = "pessoa_id"))
+    @CollectionTable(name = "PERFIS")
     protected Set<Integer> perfis = new HashSet<>();
 
     @JsonFormat(pattern = "dd/MM/yyyy")
